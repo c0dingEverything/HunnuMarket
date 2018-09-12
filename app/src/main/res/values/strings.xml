@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">湖师大跳蚤市场</string>
+    <string name="new_version_found">发现新版本</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="server_error">服务器异常!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="scan">浏览</string>
+    <string name="message">消息</string>
+    <string name="diss">吐槽</string>
+    <string name="mine">我的</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="account">学号</string>
+    <string name="password">密码</string>
+    <string name="remember_pwd">记住密码</string>
+    <string name="register">注册</string>
+    <string name="retrieve_pwd">忘记密码?</string>
+    <string name="login">登录</string>
+    <string name="msg_error_input_null">输入不能为空</string>
+    <string name="msg_error_sid_lenght_lt">学号长度为12</string>
+    <string name="msg_error_pwd_lt">密码长度不能少于4位</string>
+    <string name="login_ing">登录中…</string>
+    <string name="edit">编辑</string>
+    <string name="search">搜索</string>
+    <string name="settings">设置</string>
+    <string name="about">关于</string>
+    <string name="msg_exit_confirm">再按一次返回键退出应用</string>
+    <string name="info_offer">在售信息</string>
+    <string name="info_demand">需求信息</string>
+    <string name="qq">QQ</string>
+    <string name="phone_number">手机号码</string>
+    <string name="location">宿舍位置</string>
+    <string name="agreement">我已认真阅读并且同意该协议</string>
+    <string name="permission_deny_imei">无法获取到IMEI,请给予相关权限,仅用于限制注册!</string>
+    <string name="tianma">天马</string>
+    <string name="dezhi">德智</string>
+    <string name="changtangshan">长塘山</string>
+    <string name="jiangbian">江边</string>
+    <string name="nanyuan">南院</string>
+    <string name="msg_error_password_lenght">密码长度为4到16位</string>
+    <string name="msg_error_phone_lt">电话号码长度是11位</string>
+    <string name="msg_error_qq_lt">QQ号码长度不能少于5位</string>
+    <string name="logout">退出登录</string>
+    <string name="sell">出售</string>
+    <string name="need">求购</string>
+    <string name="no_result">没有找到相关结果</string>
+</resources>

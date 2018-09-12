@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="#f5f5f5">
+
+        <Button
+            android:id="@+id/edit_btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:text="@string/confirm" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:drawableStart="@drawable/head"
+        android:drawableLeft="@drawable/head"
+        android:drawableEnd="@mipmap/ic_launcher"
+        android:drawableRight="@mipmap/ic_launcher"
+        android:drawablePadding="20dp"
+        android:gravity="center_vertical"
+        android:hint="头像"
+        android:maxLength="15"
+        android:maxLines="1"
+        android:textColor="#acac8a"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#9d9d9d" />
+
+    <EditText
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/sid_32"
+        android:drawableLeft="@drawable/sid_32"
+        android:drawablePadding="20dp"
+        android:hint="昵称"
+        android:maxLength="15"
+        android:maxLines="1" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/qq"
+        android:drawableLeft="@drawable/qq"
+        android:drawablePadding="20dp"
+        android:hint="@string/qq"
+        android:maxLength="15"
+        android:maxLines="1" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/phone"
+        android:drawableLeft="@drawable/phone"
+        android:drawablePadding="20dp"
+        android:hint="@string/phone_number"
+        android:maxLength="15"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/edit_tv_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableStart="@drawable/location"
+        android:drawableLeft="@drawable/location"
+        android:drawableEnd="@drawable/triangle_32"
+        android:drawableRight="@drawable/triangle_32"
+        android:drawablePadding="20dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:hint="@string/location"
+        android:padding="5dp"
+        android:textColor="#acac8a"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#9d9d9d" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#f5f5f5" />
+
+
+</LinearLayout>
