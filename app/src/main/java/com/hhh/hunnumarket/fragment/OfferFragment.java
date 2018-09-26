@@ -1,8 +1,10 @@
 package com.hhh.hunnumarket.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,10 +22,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hhh.hunnumarket.R;
+import com.hhh.hunnumarket.activity.PostItemActivity;
 import com.hhh.hunnumarket.bean.Condition;
 import com.hhh.hunnumarket.bean.Good;
 import com.hhh.hunnumarket.bean.ItemsResponseObject;
-import com.hhh.hunnumarket.bean.RequestObject;
 import com.hhh.hunnumarket.bean.ResponseObject;
 import com.hhh.hunnumarket.bean.UserToken;
 import com.hhh.hunnumarket.consts.Api;
@@ -62,6 +64,7 @@ public class OfferFragment extends Fragment {
     private Map<String, String[]> pics;
     private EditText et_search;
     private Button btn_search;
+    private FloatingActionButton flb_post;
 
 
     public OfferFragment() {
@@ -79,10 +82,17 @@ public class OfferFragment extends Fragment {
 
     private void initUI(View view) {
         mRecyclerView = view.findViewById(R.id.offer_recycler_view);
+        flb_post = view.findViewById(R.id.offer_fab_post);
         et_search = view.findViewById(R.id.offer_et_search);
         btn_search = view.findViewById(R.id.offer_btn_search);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRefreshLayout = view.findViewById(R.id.refreshLayout);
+        flb_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), PostItemActivity.class));
+            }
+        });
         mRefreshLayout.setRefreshHeader(new ClassicsHeader(getContext()));
         mRefreshLayout.setRefreshFooter(new ClassicsFooter(getContext()));
         myAdapter = new MyAdapter();
@@ -119,8 +129,8 @@ public class OfferFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String s = et_search.getText().toString();
-                if (TextUtils.isEmpty(s)){
-                    Toast.makeText(getContext(),R.string.msg_error_input_null,Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(s)) {
+                    Toast.makeText(getContext(), R.string.msg_error_input_null, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 page = 0;
@@ -133,36 +143,35 @@ public class OfferFragment extends Fragment {
         });
     }
 
-    private RequestObject getRequestObject() {
-        RequestObject<Condition> requestObject = new RequestObject<>();
-        UserToken userToken = SharedPreferenceUtil.getUserToken(getContext());
+    private Condition getRequestCondition() {
         Condition condition = new Condition();
         String keyword = et_search.getText().toString();
         if (!TextUtils.isEmpty(keyword)) {
             condition.setKeyword(new String[]{keyword});
-        }else {
+        } else {
             condition.setKeyword(new String[]{});
         }
         condition.setPage(page);
         condition.setSize(size);
         condition.setOrder(order == null ? "" : order);
         condition.setOrderBy(orderBy == null ? "" : orderBy);
-        requestObject.setAccess_token(userToken.getAccess_token());
-        requestObject.setUid(userToken.getUid());
-        requestObject.setData(condition);
-        return requestObject;
+        return condition;
     }
 
     private void loadData(final int tag) {
-        final RequestParams params = new RequestParams(Api.GET_GOODS);
+        UserToken userToken = SharedPreferenceUtil.getUserToken(getContext());
+        RequestParams params = new RequestParams(Api.GET_GOODS);
+        params.addBodyParameter("uid", userToken.getUid() + "");
+        params.addBodyParameter("access_token", userToken.getAccess_token());
         params.setAsJsonContent(true);
         params.setConnectTimeout(5000);
-        params.setBodyContent(new Gson().toJson(getRequestObject()));
+        params.setBodyContent(new Gson().toJson(getRequestCondition()));
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 ItemsResponseObject<Good> responseObject = new Gson().fromJson(result, new TypeToken<ItemsResponseObject<Good>>() {
                 }.getType());
+                Log.d(TAG, responseObject.toString());
                 if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
                     if (responseObject.getItems().size() != 0) {
                         data.addAll(responseObject.getItems());
@@ -177,9 +186,9 @@ public class OfferFragment extends Fragment {
                     } else {
                         if (tag == LOAD_MORE) {
                             mRefreshLayout.finishLoadMoreWithNoMoreData();
-                        } else if(tag==REFRESH){
+                        } else if (tag == REFRESH) {
                             mRefreshLayout.finishRefresh();
-                            Toast.makeText(getContext(), R.string.no_result,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), R.string.no_result, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -187,12 +196,12 @@ public class OfferFragment extends Fragment {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
+                ex.printStackTrace();
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
-
+                cex.printStackTrace();
             }
 
             @Override

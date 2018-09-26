@@ -46,4 +46,12 @@
     <string name="sell">出售</string>
     <string name="need">求购</string>
     <string name="no_result">没有找到相关结果</string>
+    <string name="keyword">关键词</string>
+    <string name="price">价格</string>
+    <string name="details">详细描述</string>
+    <string name="sex_tendency">适用性别</string>
+    <string name="contact">联系方式</string>
+    <string name="demand">求购</string>
+    <string name="offer">出售</string>
+    <string name="post_info">信息发布</string>
 </resources>

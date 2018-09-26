@@ -47,6 +47,7 @@
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/offer_fab_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

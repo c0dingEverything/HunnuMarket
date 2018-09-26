@@ -1,29 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white">
+
+            <Button
+                android:id="@+id/act_post_btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:background="@android:color/transparent"
+                android:text="@string/cancel"
+                android:textColor="#f17f29" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/post_info"
+                android:textSize="@dimen/toolbar_text" />
+
+            <Button
+                android:id="@+id/act_post_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@android:color/transparent"
+                android:text="@string/confirm"
+                android:textColor="#f17f29" />
+        </android.support.v7.widget.Toolbar>
+
+        <RadioGroup
+            android:id="@+id/act_post_rg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_border"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <RadioButton
+                android:id="@+id/act_post_rb_demand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/demand"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/act_post_rb_offer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/offer"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/act_post_et_keyword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_border"
+            android:drawableLeft="@drawable/keyword_32"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/keyword"
+            android:padding="5dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/act_post_et_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_border"
+            android:drawableLeft="@drawable/price_32"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/price"
+            android:padding="5dp"
+            android:textSize="18sp" />
+
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/act_post_tv_tendency"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/sell"
-            android:textSize="@dimen/toolbar_text" />
+            android:background="@drawable/item_border"
+            android:drawableLeft="@drawable/sex_32"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/sex_tendency"
+            android:padding="5dp"
+            android:textSize="18sp" />
 
-        <Button
+        <TextView
+            android:id="@+id/act_post_tv_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_border"
+            android:drawableLeft="@drawable/location"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/location"
+            android:padding="5dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/act_post_et_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_border"
+            android:drawableLeft="@drawable/contact_32"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/contact"
+            android:padding="5dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/act_post_et_details"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/item_border"
+            android:drawablePadding="10dp"
+            android:gravity="top"
+            android:hint="@string/details"
+            android:padding="5dp"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/act_post_ib_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="@android:color/transparent"
-            android:text="@string/confirm"
-            android:textColor="#f17f29" />
-    </android.support.v7.widget.Toolbar>
+            android:contentDescription="@null"
+            android:src="@drawable/photo_64" />
 
-
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
