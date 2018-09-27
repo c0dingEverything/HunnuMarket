@@ -2,6 +2,7 @@ package com.hhh.hunnumarket.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.hhh.hunnumarket.bean.UserToken;
 
@@ -10,10 +11,26 @@ import java.util.Map;
 public class SharedPreferenceUtil {
     public final static String USER_INFO = "user_info";
     public final static String USER_TOKEN = "user_token";
+    private static int uid;
+    private static String access_token;
+
+    public static String getAccessToken(Context context) {
+        if (TextUtils.isEmpty(access_token)) {
+            access_token = context.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE).getString("access_token", "");
+            return access_token;
+        } else {
+            return access_token;
+        }
+    }
 
 
-    public static int getUId(Context context){
-        return context.getSharedPreferences(USER_TOKEN,Context.MODE_PRIVATE).getInt("uid",0);
+    public static int getUid(Context context) {
+        if (uid == 0) {
+            uid = context.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE).getInt("uid", 0);
+            return uid;
+        } else {
+            return uid;
+        }
     }
 
     public static void saveUserToken(Context context, UserToken userToken) {
@@ -21,6 +38,7 @@ public class SharedPreferenceUtil {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("access_token", userToken.getAccess_token());
         editor.putString("expiry", userToken.getExpiry());
+        editor.putInt("uid", userToken.getUid());
         editor.apply();
     }
 
@@ -33,9 +51,6 @@ public class SharedPreferenceUtil {
         return userToken;
     }
 
-    public static String getAccessToken(Context context) {
-        return context.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE).getString("access_token", "");
-    }
 
     /**
      * 保存信息到本地

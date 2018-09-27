@@ -1,66 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragment.MineFragment">
+    android:layout_height="match_parent">
 
-    <!-- <android.support.v7.widget.Toolbar
-         android:id="@+id/scan_toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         android:background="@android:color/white"
-         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-         <TextView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_gravity="center_horizontal"
-             android:text="信息浏览"
-             android:textColor="@android:color/black"
-             android:textSize="18sp" />
-
-         <ImageButton
-             android:id="@+id/scan_btn_post"
-             android:layout_width="27dp"
-             android:layout_height="27dp"
-             android:layout_gravity="end"
-             android:layout_marginEnd="10dp"
-             android:layout_marginRight="10dp"
-             android:background="@android:color/transparent"
-             android:scaleType="fitXY"
-             android:src="@drawable/post_32" />
-
-         <ImageButton
-             android:id="@+id/scan_btn_search"
-             android:layout_width="28dp"
-             android:layout_height="28dp"
-             android:layout_gravity="end"
-             android:layout_marginEnd="15dp"
-             android:layout_marginRight="15dp"
-             android:background="@android:color/transparent"
-             android:contentDescription="@null"
-             android:scaleType="fitXY"
-             android:src="@drawable/search_32" />
-     </android.support.v7.widget.Toolbar>-->
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/scan_tab_layout"
+    <LinearLayout
+        android:id="@+id/fra_scan_ll"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="#e1580f"
-        app:tabIndicatorHeight="2dp"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@android:color/darker_gray"
-        app:tabTextColor="@android:color/black" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:padding="5dp">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/scan_view_pager"
+        <TextView
+            android:id="@+id/fra_scan_tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/arrow_down_16"
+            android:text="@string/on_sale"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/fra_scan_tv_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:drawableRight="@drawable/arrow_down_16"
+            android:text="@string/category"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/fra_scan_tv_sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:drawableRight="@drawable/arrow_down_16"
+            android:text="@string/all"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/fra_scan_tv_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:drawableRight="@drawable/arrow_down_16"
+            android:text="@string/comprehensive_ranking"
+            android:textSize="16sp" />
+
+
+        <EditText
+            android:id="@+id/fra_scan_et_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/item_border"
+            android:inputType="text"
+            android:maxLength="10"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/fra_scan_btn_search"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:text="@string/search"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/fra_scan_ll">
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fra_scan_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fra_scan_fab_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/post_48"
+        app:backgroundTint="@color/colorTitleBlue"
+        app:fabSize="normal" />
+
+
+</RelativeLayout>

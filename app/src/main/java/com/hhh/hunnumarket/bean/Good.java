@@ -6,8 +6,11 @@ public class Good {
     public final static int STATE_ON_SALE = 2;
     public final static int STATE_SOLD = 3;
     public final static int STATE_DELETED = 4;
+    public final static int TYPE_SELL = 0;
+    public final static int TYPE_DEMAND = 1;
 
     private Integer gid;
+    private Integer type;
     private String keyword;
     private Integer uid;
     private Integer visited;
@@ -31,6 +34,14 @@ public class Good {
                 ", uid=" + uid +
                 ", price=" + price +
                 '}';
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Integer getGid() {

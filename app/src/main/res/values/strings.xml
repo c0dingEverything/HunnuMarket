@@ -54,4 +54,25 @@
     <string name="demand">求购</string>
     <string name="offer">出售</string>
     <string name="post_info">信息发布</string>
+    <string name="pic_alread_selected">该图片已经勾选过了</string>
+    <string name="category">类别</string>
+    <string name="data_not_loaded_completely">数据还没有加载完成</string>
+    <string name="all_sex">通用</string>
+    <string name="comprehensive_ranking">综合排序</string>
+    <string name="on_sale">在售</string>
+    <string name="all">全部</string>
+
+    <string-array name="locations">
+        <item>德智</item>
+        <item>南院</item>
+        <item>天马</item>
+        <item>长塘山</item>
+        <item>江边</item>
+    </string-array>
+    <string-array name="sex">
+        <item>男</item>
+        <item>女</item>
+        <item>通用</item>
+    </string-array>
+
 </resources>

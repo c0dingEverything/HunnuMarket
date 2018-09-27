@@ -9,6 +9,15 @@ public class Condition {
     private String orderBy;
     private int page;
     private int size;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getPage() {
         return page;
