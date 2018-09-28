@@ -16,6 +16,7 @@ import com.hhh.hunnumarket.fragment.MessageFragment;
 import com.hhh.hunnumarket.fragment.MineFragment;
 import com.hhh.hunnumarket.fragment.ScanFragment;
 import com.hhh.hunnumarket.utils.BottomNavigationViewHelper;
+import com.hhh.hunnumarket.utils.DataUtil;
 
 import org.xutils.x;
 
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         x.view().inject(this);
+        DataUtil.getCategoriesFromServer(getApplicationContext());
         service = Executors.newSingleThreadExecutor();
         fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-            
+
         } else {
             finish();
         }

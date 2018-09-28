@@ -26,12 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hhh.hunnumarket.R;
 import com.hhh.hunnumarket.bean.Category;
 import com.hhh.hunnumarket.bean.Good;
-import com.hhh.hunnumarket.bean.ResponseObject;
 import com.hhh.hunnumarket.consts.Api;
+import com.hhh.hunnumarket.utils.DataUtil;
 import com.hhh.hunnumarket.utils.SharedPreferenceUtil;
 
 import org.xutils.common.Callback;
@@ -47,7 +46,6 @@ import java.util.List;
 
 public class PostItemActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private EditText et_contact;
     private EditText et_details;
     private EditText et_price;
@@ -62,7 +60,6 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
     private int location_checked;
     private int category_checked;
     private String[] categories;
-    private boolean isCategoriesReady;
     private List<Category> data;
 
     @Override
@@ -75,40 +72,12 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void getCategories() {
-        RequestParams params = new RequestParams(Api.GET_CATEGORIES);
-        params.addBodyParameter("uid", SharedPreferenceUtil.getUid(getApplicationContext()) + "");
-        params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(getApplicationContext()));
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                ResponseObject<List<Category>> responseObject = new Gson().fromJson(result, new TypeToken<ResponseObject<List<Category>>>() {
-                }.getType());
-                if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
-                    data = responseObject.getData();
-                    categories = new String[data.size()];
-                    int i = 0;
-                    for (Category category : data) {
-                        categories[i++] = category.getCname();
-                    }
-                    isCategoriesReady = true;
-                }
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
+        data = DataUtil.getCategories(getApplicationContext());
+        categories = new String[data.size()];
+        int i = 0;
+        for (Category category : data) {
+            categories[i++] = category.getCname();
+        }
     }
 
     private void initUI() {
@@ -133,7 +102,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.act_post_tv_category:
-                if (categories == null && !isCategoriesReady) {
+                if (categories == null) {
                     Toast.makeText(getApplicationContext(), R.string.data_not_loaded_completely, Toast.LENGTH_SHORT).show();
                     getCategories();
                 } else {
@@ -166,6 +135,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                 for (Category c : data) {
                     if (category.equals(c.getCname())) {
                         cid = c.getCid();
+                        break;
                     }
                 }
 
@@ -183,6 +153,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                 good.setCid(cid);
                 good.setPrice(Float.parseFloat(price));
                 good.setUser_location(location);
+                good.setType(purpose);
                 good.setUid(SharedPreferenceUtil.getUid(getApplicationContext()));
                 RequestParams params = new RequestParams(Api.POST_ITEM);
                 if (pics != null && pics.size() != 0) {
@@ -197,12 +168,14 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                 }
                 params.addBodyParameter("purpose", purpose + "");
                 params.addBodyParameter("uid", SharedPreferenceUtil.getUid(getApplicationContext()) + "");
-                params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(getApplicationContext()) + "");
+                params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(getApplicationContext()));
                 params.addBodyParameter("good", new Gson().toJson(good));
+                final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("上传中，请稍后!").setCancelable(false).show();
                 x.http().post(params, new Callback.CommonCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
                     }
 
                     @Override
@@ -217,7 +190,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
 
                     @Override
                     public void onFinished() {
-
+                        alertDialog.dismiss();
                     }
                 });
                 break;

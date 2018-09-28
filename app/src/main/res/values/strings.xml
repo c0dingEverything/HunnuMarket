@@ -61,6 +61,7 @@
     <string name="comprehensive_ranking">综合排序</string>
     <string name="on_sale">在售</string>
     <string name="all">全部</string>
+    <string name="order">排序</string>
 
     <string-array name="locations">
         <item>德智</item>
@@ -70,9 +71,20 @@
         <item>江边</item>
     </string-array>
     <string-array name="sex">
+        <item>全部</item>
         <item>男</item>
         <item>女</item>
-        <item>通用</item>
+    </string-array>
+
+    <string-array name="type">
+        <item>在售</item>
+        <item>求购</item>
+    </string-array>
+    <string-array name="order">
+        <item>综合排序</item>
+        <item>价格升序</item>
+        <item>价格降序</item>
+        <item>浏览量降序</item>
     </string-array>
 
 </resources>

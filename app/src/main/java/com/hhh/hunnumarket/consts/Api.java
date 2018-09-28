@@ -5,7 +5,7 @@ public class Api {
     private final static String BASE_URL_WEB = "http://192.168.16.128:8080";
 
     public final static String SEPARATOR = "/";
-    public final static String BASE_URL = BASE_URL_LOCAL;
+    public final static String BASE_URL = BASE_URL_WEB;
 
     public final static String SPLASH = "hm/file";
     public final static String LOGIN = BASE_URL+"/hm/api/login";

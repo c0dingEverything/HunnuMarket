@@ -54,7 +54,7 @@ import java.util.Map;
 
 public class ScanFragment extends Fragment implements View.OnClickListener {
     private int page = 0;
-    private int size = 5;
+    private int size = 10;
     private String order = null;
     private String orderBy = null;
     private static final int REFRESH = 1;
@@ -76,6 +76,10 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     private List<Category> categoryList;
     private String[] categories;
     private int category_checked;
+    private int order_checked;
+    private int type_checked;
+    private int sex_checked;
+    private Condition condition;
 
 
     @Override
@@ -118,10 +122,11 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.fra_scan_tv_category:
                 if (categoryList == null) {
-                    Toast.makeText(getActivity(), R.string.data_not_loaded_completely, Toast.LENGTH_SHORT).show();
-                    categoryList = DataUtil.getCategories(getContext());
+                    getCategories();
                 } else {
-                    int i = 0;
+                    int i = 1;
+                    categories = new String[categoryList.size() + 1];
+                    categories[0] = "全部";
                     for (Category category : categoryList) {
                         categories[i++] = category.getCname();
                     }
@@ -130,28 +135,99 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                         public void onClick(DialogInterface dialog, int which) {
                             category_checked = which;
                             tv_category.setText(categories[which]);
+                            for (Category category : categoryList) {
+                                if (category.getCname().equals(categories[category_checked])) {
+                                    condition.setCid(category.getCid());
+                                    break;
+                                } else {
+                                    condition.setCid(0);
+                                }
+                            }
                             dialog.dismiss();
+                            loadData(REFRESH);
                         }
                     }).show();
+
                 }
                 break;
             case R.id.fra_scan_tv_order:
+                final String[] orders = getResources().getStringArray(R.array.order);
+                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(orders, order_checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        order_checked = which;
+                        tv_order.setText(orders[which]);
+                        if (orders[which].contains("升")) {
+                            condition.setOrder(Condition.ORDER_UP);
+                        } else if (orders[which].contains("降")) {
+                            condition.setOrder(Condition.ORDER_DOWN);
+                        }
 
+                        if (orders[which].contains("价格")) {
+                            condition.setOrderBy("price");
+                        } else if (orders[which].contains("浏览量")) {
+                            condition.setOrderBy("visited");
+                        }
+
+                        dialog.dismiss();
+                        loadData(REFRESH);
+                    }
+                }).setTitle(R.string.order).show();
                 break;
             case R.id.fra_scan_tv_sex:
-
+                final String[] sex = getResources().getStringArray(R.array.sex);
+                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(sex, sex_checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sex_checked = which;
+                        tv_sex.setText(sex[which]);
+                        if (sex[which].equals("男")) {
+                            condition.setSex_tendency(Condition.SEX_MAN);
+                        } else if (sex[which].equals("女")) {
+                            condition.setSex_tendency(Condition.SEX_WOMEN);
+                        } else {
+                            condition.setSex_tendency(Condition.SEX_ALL);
+                        }
+                        dialog.dismiss();
+                        loadData(REFRESH);
+                    }
+                }).setTitle(R.string.sex_tendency).show();
                 break;
             case R.id.fra_scan_tv_type:
-
+                final String[] type = getResources().getStringArray(R.array.type);
+                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(type, type_checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        type_checked = which;
+                        tv_type.setText(type[which]);
+                        if (type[which].equals(getString(R.string.on_sale))) {
+                            condition.setType(Good.TYPE_SELL);
+                        } else if (type[which].equals(getString(R.string.demand))) {
+                            condition.setType(Good.TYPE_DEMAND);
+                        }
+                        dialog.dismiss();
+                        loadData(REFRESH);
+                    }
+                }).show();
                 break;
         }
+
+    }
+
+    private void getCategories() {
+//        Toast.makeText(getActivity(), R.string.data_not_loaded_completely, Toast.LENGTH_SHORT).show();
+        categoryList = DataUtil.getCategories(getContext());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        categoryList = DataUtil.getCategories(getContext());
-
+        initRequestCondition();
         if (data == null) {
             data = new ArrayList<>();
             pics = new HashMap<>();
@@ -184,25 +260,26 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(), R.string.msg_error_input_null, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                page = 0;
+                condition.setKeyword(new String[]{s});
+                /*page = 0;
                 if (data != null) {
                     data.clear();
                     pics.clear();
-                }
+                }*/
                 loadData(REFRESH);
             }
         });
     }
 
-    private Condition getRequestCondition() {
-        Condition condition = new Condition();
+    private Condition initRequestCondition() {
+        condition = new Condition();
         String keyword = et_search.getText().toString();
         if (!TextUtils.isEmpty(keyword)) {
             condition.setKeyword(new String[]{keyword});
         } else {
             condition.setKeyword(new String[]{});
         }
-        condition.setType(Good.TYPE_SELL);
+
         condition.setPage(page);
         condition.setSize(size);
         condition.setOrder(order == null ? "" : order);
@@ -217,7 +294,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
         params.addBodyParameter("access_token", userToken.getAccess_token());
         params.setAsJsonContent(true);
         params.setConnectTimeout(5000);
-        params.setBodyContent(new Gson().toJson(getRequestCondition()));
+        condition.setPage(page);
+        params.setBodyContent(new Gson().toJson(condition));
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -226,15 +304,22 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, responseObject.toString());
                 if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
                     if (responseObject.getItems().size() != 0) {
+                        if (tag == REFRESH) {
+                            page = 0;
+                            if (data != null && data.size() != 0) {
+                                data.clear();
+                                pics.clear();
+                            }
+                        }
                         data.addAll(responseObject.getItems());
                         pics.putAll(responseObject.getPics());
                         myAdapter.notifyDataSetChanged();
                         if (tag == LOAD_MORE) {
+                            page += size;
                             mRefreshLayout.finishLoadMore();
                         } else {
                             mRefreshLayout.finishRefresh();
                         }
-                        page += size;
                     } else {
                         if (tag == LOAD_MORE) {
                             mRefreshLayout.finishLoadMoreWithNoMoreData();

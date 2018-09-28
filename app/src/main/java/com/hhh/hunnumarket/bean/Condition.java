@@ -1,15 +1,36 @@
 package com.hhh.hunnumarket.bean;
 
 public class Condition {
-    public final static String UP="asc";
-    public final static String DOWN="desc";
+    public final static String ORDER_UP = "asc";
+    public final static String ORDER_DOWN = "desc";
+    public final static int SEX_MAN = 0;
+    public final static int SEX_WOMEN = 1;
+    public final static int SEX_ALL = 2;
 
     private String[] keyword;
-    private String order;
+    private String order = ORDER_DOWN;
     private String orderBy;
     private int page;
-    private int size;
-    private int type;
+    private int size = 10;
+    private int type = Good.TYPE_SELL;
+    private int cid;
+    private int sex_tendency = SEX_ALL;
+
+    public int getCid() {
+        return cid;
+    }
+
+    public void setCid(int cid) {
+        this.cid = cid;
+    }
+
+    public int getSex_tendency() {
+        return sex_tendency;
+    }
+
+    public void setSex_tendency(int sex_tendency) {
+        this.sex_tendency = sex_tendency;
+    }
 
     public int getType() {
         return type;
