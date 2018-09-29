@@ -18,6 +18,11 @@ import android.widget.Toast;
 import com.hhh.hunnumarket.R;
 import com.hhh.hunnumarket.activity.EditUserInfoActivity;
 import com.hhh.hunnumarket.activity.LoginActivity;
+import com.hhh.hunnumarket.consts.Api;
+import com.hhh.hunnumarket.utils.DataUtil;
+import com.hhh.hunnumarket.utils.SharedPreferenceUtil;
+
+import org.xutils.http.RequestParams;
 
 
 public class MineFragment extends Fragment implements View.OnClickListener {
@@ -47,9 +52,12 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        initData();
     }
 
+    private void initData() {
+
+    }
 
 
     private void initUI(View view) {
@@ -78,7 +86,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -92,10 +99,11 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_btn_edit:
-                startActivityForResult(new Intent(getActivity(), EditUserInfoActivity.class),1);
+                startActivityForResult(new Intent(getActivity(), EditUserInfoActivity.class), 1);
                 break;
             case R.id.mine_btn_logout:
                 startActivity(new Intent(getActivity(), LoginActivity.class));
+                SharedPreferenceUtil.updateAccessToken();
                 getActivity().finish();
                 break;
         }
@@ -103,7 +111,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode==1) {
+        if (resultCode == 1) {
 
         }
     }

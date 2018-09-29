@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         cb_rememberPwd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferenceUtil.setCheckBoxStatus(getApplicationContext(), null, isChecked);
+                SharedPreferenceUtil.setCheckBoxStatus(null, isChecked);
             }
         });
         checkIfShouldReadInfo();
@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkIfShouldReadInfo() {
-        Map<String, ?> userInfo = SharedPreferenceUtil.getUserInfo(this);
+        Map<String, ?> userInfo = SharedPreferenceUtil.getUserInfo();
         Boolean checked = (Boolean) userInfo.get("checked");
         if (checked != null) {
             if (checked) {
@@ -122,8 +122,8 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
                                 if (responseObject.getStatus() == 1) {
                                     UserToken userToken = responseObject.getData();
-                                    SharedPreferenceUtil.saveUserToken(getApplicationContext(), userToken);
-                                    SharedPreferenceUtil.saveUserInfo(getApplicationContext(), cb_rememberPwd.isChecked(), sid, pwd);
+                                    SharedPreferenceUtil.saveUserToken( userToken);
+                                    SharedPreferenceUtil.saveUserInfo( cb_rememberPwd.isChecked(), sid, pwd);
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                     finish();
                                 }

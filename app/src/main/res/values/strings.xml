@@ -62,6 +62,9 @@
     <string name="on_sale">在售</string>
     <string name="all">全部</string>
     <string name="order">排序</string>
+    <string name="head">头像</string>
+    <string name="nickname">昵称</string>
+    <string name="updating">正在提交更新...</string>
 
     <string-array name="locations">
         <item>德智</item>

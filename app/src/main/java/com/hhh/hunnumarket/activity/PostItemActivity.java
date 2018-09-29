@@ -72,7 +72,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void getCategories() {
-        data = DataUtil.getCategories(getApplicationContext());
+        data = DataUtil.getCategories();
         categories = new String[data.size()];
         int i = 0;
         for (Category category : data) {
@@ -154,7 +154,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                 good.setPrice(Float.parseFloat(price));
                 good.setUser_location(location);
                 good.setType(purpose);
-                good.setUid(SharedPreferenceUtil.getUid(getApplicationContext()));
+                good.setUid(SharedPreferenceUtil.getUid());
                 RequestParams params = new RequestParams(Api.POST_ITEM);
                 if (pics != null && pics.size() != 0) {
                     List<KeyValue> list = new ArrayList<>();
@@ -167,8 +167,8 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                     params.setMultipart(true);
                 }
                 params.addBodyParameter("purpose", purpose + "");
-                params.addBodyParameter("uid", SharedPreferenceUtil.getUid(getApplicationContext()) + "");
-                params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(getApplicationContext()));
+                params.addBodyParameter("uid", SharedPreferenceUtil.getUid() + "");
+                params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken());
                 params.addBodyParameter("good", new Gson().toJson(good));
                 final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("上传中，请稍后!").setCancelable(false).show();
                 x.http().post(params, new Callback.CommonCallback<String>() {

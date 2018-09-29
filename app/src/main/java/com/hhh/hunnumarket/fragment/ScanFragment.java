@@ -216,7 +216,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
 
     private void getCategories() {
 //        Toast.makeText(getActivity(), R.string.data_not_loaded_completely, Toast.LENGTH_SHORT).show();
-        categoryList = DataUtil.getCategories(getContext());
+        categoryList = DataUtil.getCategories();
     }
 
     @Override
@@ -288,7 +288,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadData(final int tag) {
-        UserToken userToken = SharedPreferenceUtil.getUserToken(getContext());
+        UserToken userToken = SharedPreferenceUtil.getUserToken();
         RequestParams params = new RequestParams(Api.GET_GOODS);
         params.addBodyParameter("uid", userToken.getUid() + "");
         params.addBodyParameter("access_token", userToken.getAccess_token());

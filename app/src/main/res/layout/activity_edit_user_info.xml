@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -22,6 +22,7 @@
 
 
     <TextView
+        android:id="@+id/edit_tv_head"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:drawableStart="@drawable/head"
@@ -30,7 +31,7 @@
         android:drawableRight="@mipmap/ic_launcher"
         android:drawablePadding="20dp"
         android:gravity="center_vertical"
-        android:hint="头像"
+        android:hint="@string/head"
         android:maxLength="15"
         android:maxLines="1"
         android:textColor="#acac8a"
@@ -46,17 +47,19 @@
         android:background="#9d9d9d" />
 
     <EditText
+        android:id="@+id/edit_et_nickname"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/sid_32"
         android:drawableLeft="@drawable/sid_32"
         android:drawablePadding="20dp"
-        android:hint="昵称"
+        android:hint="@string/nickname"
         android:maxLength="15"
         android:maxLines="1" />
 
     <EditText
+        android:id="@+id/edit_et_qq"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/qq"
@@ -67,6 +70,7 @@
         android:maxLines="1" />
 
     <EditText
+        android:id="@+id/edit_et_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/phone"
@@ -80,13 +84,11 @@
         android:id="@+id/edit_tv_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:drawableStart="@drawable/location"
         android:drawableLeft="@drawable/location"
         android:drawableEnd="@drawable/triangle_32"
         android:drawableRight="@drawable/triangle_32"
         android:drawablePadding="20dp"
-        android:focusable="true"
         android:gravity="center_vertical"
         android:hint="@string/location"
         android:padding="5dp"

@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         x.view().inject(this);
-        DataUtil.getCategoriesFromServer(getApplicationContext());
+        DataUtil.updateCategoriesFromServer();     //更新类别
+        DataUtil.updateUserInfoFromServer();       //更新用户信息
         service = Executors.newSingleThreadExecutor();
         fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

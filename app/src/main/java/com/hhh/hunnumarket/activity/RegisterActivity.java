@@ -25,7 +25,6 @@ import com.google.gson.Gson;
 import com.hhh.hunnumarket.R;
 import com.hhh.hunnumarket.bean.User;
 import com.hhh.hunnumarket.consts.Api;
-import com.hhh.hunnumarket.consts.Const;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,11 +97,11 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
             case R.id.register_tv_location:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                final String[] items = Const.getLocations(this);
+                final String[] items = getResources().getStringArray(R.array.locations);
                 builder.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        checkedItem=which;
+                        checkedItem = which;
                         tv_location.setText(items[which]);
                         dialog.dismiss();
                     }
