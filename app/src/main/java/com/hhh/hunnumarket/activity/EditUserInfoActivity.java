@@ -59,10 +59,35 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     private void initData() {
         User user = DataUtil.getUerInfo();
         tv_location.setText(user.getUser_location());
-        tv_head.setText(user.getImage_url());
         et_phone.setText(user.getPhone_number());
         et_nickname.setText(user.getNickname());
         et_qq.setText(user.getQq());
+        RequestParams params = new RequestParams(Api.ITEM_IMAGE + user.getImage_url());
+        x.http().get(params, new Callback.CommonCallback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                Drawable left = getResources().getDrawable(R.drawable.head);
+                left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());
+                Drawable right = Drawable.createFromPath(result.getAbsolutePath());
+                right.setBounds(0, 0, right.getMinimumWidth() - 5, right.getMinimumHeight() - 5);
+                tv_head.setCompoundDrawables(left, null, right, null);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     private void initUI() {
@@ -119,7 +144,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                         }.getType());
                         Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
 
-                        if (responseObject.getStatus()==ResponseObject.STATUS_OK) {
+                        if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
                             user.setImage_url(responseObject.getData());
                             SharedPreferenceUtil.updateUserInfo(user);
                         }

@@ -1,6 +1,7 @@
 package com.hhh.hunnumarket.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,11 +19,12 @@ import android.widget.Toast;
 import com.hhh.hunnumarket.R;
 import com.hhh.hunnumarket.activity.EditUserInfoActivity;
 import com.hhh.hunnumarket.activity.LoginActivity;
+import com.hhh.hunnumarket.bean.Good;
+import com.hhh.hunnumarket.bean.User;
 import com.hhh.hunnumarket.consts.Api;
 import com.hhh.hunnumarket.utils.DataUtil;
 import com.hhh.hunnumarket.utils.SharedPreferenceUtil;
-
-import org.xutils.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 
 public class MineFragment extends Fragment implements View.OnClickListener {
@@ -56,7 +58,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
-
+        User user = SharedPreferenceUtil.getUser();
+        tv_nickname.setText(user.getNickname());
+        Picasso.get().load(Api.getPicFullUrl(user.getImage_url())).into(iv_head);
     }
 
 

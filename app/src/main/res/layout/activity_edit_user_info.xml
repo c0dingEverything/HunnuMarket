@@ -31,10 +31,10 @@
         android:drawableRight="@mipmap/ic_launcher"
         android:drawablePadding="20dp"
         android:gravity="center_vertical"
-        android:hint="@string/head"
         android:maxLength="15"
         android:maxLines="1"
-        android:textColor="#acac8a"
+        android:text="@string/head"
+        android:textColor="@android:color/black"
         android:textSize="18sp" />
 
     <View
@@ -48,15 +48,15 @@
 
     <EditText
         android:id="@+id/edit_et_nickname"
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:drawableStart="@drawable/sid_32"
         android:drawableLeft="@drawable/sid_32"
         android:drawablePadding="20dp"
         android:hint="@string/nickname"
         android:maxLength="15"
-        android:maxLines="1" />
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/edit_et_qq"
@@ -67,7 +67,7 @@
         android:drawablePadding="20dp"
         android:hint="@string/qq"
         android:maxLength="15"
-        android:maxLines="1" />
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/edit_et_phone"
@@ -78,7 +78,7 @@
         android:drawablePadding="20dp"
         android:hint="@string/phone_number"
         android:maxLength="15"
-        android:maxLines="1" />
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/edit_tv_location"
@@ -92,7 +92,7 @@
         android:gravity="center_vertical"
         android:hint="@string/location"
         android:padding="5dp"
-        android:textColor="#acac8a"
+        android:textColor="@android:color/black"
         android:textSize="18sp" />
 
     <View
