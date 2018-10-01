@@ -3,6 +3,11 @@ package com.hhh.hunnumarket.bean;
 import java.io.Serializable;
 
 public class User implements Serializable {
+
+    public final static int STATE_UNAUTHORIZED = 0;
+    public final static int STATE_AUTHORIZED = 1;
+    public final static int STATE_BANNED = 2;
+
     private Integer uid;
     private String sid;
     private String password;

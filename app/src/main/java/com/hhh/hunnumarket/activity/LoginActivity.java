@@ -1,8 +1,13 @@
 package com.hhh.hunnumarket.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -55,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         x.view().inject(this);
+        checkPermissions();
+
         setDrawableSize();
 
         cb_rememberPwd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -71,6 +78,24 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(getApplicationContext(), RegisterActivity.class), REGISTER);
             }
         });
+    }
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "请授予相关权限", Toast.LENGTH_SHORT).show();
+                    checkPermissions();
+                }
+                break;
+        }
     }
 
     @Override

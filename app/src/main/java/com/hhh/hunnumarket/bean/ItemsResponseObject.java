@@ -18,10 +18,9 @@ public class ItemsResponseObject<T> {
 
     @Override
     public String toString() {
-        return "ResponseObject{" +
-                "status=" + status +
-                ", msg='" + msg + '\'' +
-                ", items=" + items +
+        return "ItemsResponseObject{" +
+                "items=" + items +
+                ", pics=" + pics +
                 '}';
     }
 

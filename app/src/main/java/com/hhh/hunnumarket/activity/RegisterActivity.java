@@ -118,8 +118,9 @@ public class RegisterActivity extends AppCompatActivity {
         String location = tv_location.getText().toString().trim();
         String qq = et_qq.getText().toString().trim();
 
-        verifyInput(sid, password, phone, location, qq);
-
+        if (verifyInput(sid, password, phone, location, qq)) {
+            return;
+        }
         String imei = null;
         JSONObject jsonObject = null;
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -145,40 +146,40 @@ public class RegisterActivity extends AppCompatActivity {
                 register(params);
             } else {
                 Toast.makeText(getApplicationContext(), R.string.permission_deny_imei, Toast.LENGTH_SHORT).show();
-                return;
             }
         } catch (SecurityException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), R.string.permission_deny_imei, Toast.LENGTH_SHORT).show();
-            return;
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void verifyInput(String sid, String password, String phone, String location, String qq) {
+    private boolean verifyInput(String sid, String password, String phone, String location, String qq) {
         if (TextUtils.isEmpty(sid) || TextUtils.isEmpty(password) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(location) || TextUtils.isEmpty(qq)) {
             Toast.makeText(getApplicationContext(), R.string.msg_error_input_null, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if (sid.length() != 12) {
             Toast.makeText(getApplicationContext(), R.string.msg_error_sid_lenght_lt, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if (password.length() < 4) {
             Toast.makeText(getApplicationContext(), R.string.msg_error_password_lenght, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if (phone.length() != 11) {
             Toast.makeText(getApplicationContext(), R.string.msg_error_phone_lt, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (qq.length() < 5 || qq.length() > 10) {
             Toast.makeText(getApplicationContext(), R.string.msg_error_qq_lt, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
+
+        return true;
     }
 
     private void register(RequestParams params) {

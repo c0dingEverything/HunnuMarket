@@ -64,7 +64,11 @@
     <string name="order">排序</string>
     <string name="head">头像</string>
     <string name="nickname">昵称</string>
-    <string name="updating">正在提交更新...</string>
+    <string name="updating">正在提交更新&#8230;</string>
+    <string name="basic_info">关键词: %1$s\n价格: %2$s\n坐标: %3$s\n详细描述: %4$s\n联系方式: %5$s</string>
+    <string name="authorized">已认证</string>
+    <string name="unauthorized">未认证</string>
+    <string name="banned">已封禁</string>
 
     <string-array name="locations">
         <item>德智</item>

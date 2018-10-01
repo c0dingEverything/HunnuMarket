@@ -1,6 +1,10 @@
 package com.hhh.hunnumarket.bean;
 
-public class Good {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Good implements Serializable {
     public final static int STATE_NOT_VERIFIED = 0;
     public final static int STATE_VERIFIED = 1;
     public final static int STATE_ON_SALE = 2;

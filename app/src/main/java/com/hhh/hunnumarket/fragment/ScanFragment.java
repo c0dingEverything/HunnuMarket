@@ -18,12 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hhh.hunnumarket.R;
+import com.hhh.hunnumarket.activity.ItemDetailsActivity;
 import com.hhh.hunnumarket.activity.PostItemActivity;
 import com.hhh.hunnumarket.bean.Category;
 import com.hhh.hunnumarket.bean.Condition;
@@ -62,7 +64,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     private final String TAG = "OfferFragment";
 
     private RecyclerView mRecyclerView;
-    private List<Good> data;
+    private List<Good> mData;
     private MyAdapter myAdapter;
     private RefreshLayout mRefreshLayout;
     private Map<String, String[]> pics;
@@ -168,7 +170,6 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                         } else if (orders[which].contains("浏览量")) {
                             condition.setOrderBy("visited");
                         }
-
                         dialog.dismiss();
                         loadData(REFRESH);
                     }
@@ -228,8 +229,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRequestCondition();
-        if (data == null) {
-            data = new ArrayList<>();
+        if (mData == null) {
+            mData = new ArrayList<>();
             pics = new HashMap<>();
             mRecyclerView.setAdapter(myAdapter);
             loadData(REFRESH);
@@ -245,8 +246,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 0;
-                if (data != null) {
-                    data.clear();
+                if (mData != null) {
+                    mData.clear();
                     pics.clear();
                 }
                 loadData(REFRESH);
@@ -262,8 +263,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 }
                 condition.setKeyword(new String[]{s});
                 /*page = 0;
-                if (data != null) {
-                    data.clear();
+                if (mData != null) {
+                    mData.clear();
                     pics.clear();
                 }*/
                 loadData(REFRESH);
@@ -288,6 +289,13 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadData(final int tag) {
+        if (tag == REFRESH) {
+            page = 0;
+            if (mData != null && mData.size() != 0) {
+                mData.clear();
+                pics.clear();
+            }
+        }
         UserToken userToken = SharedPreferenceUtil.getUserToken();
         RequestParams params = new RequestParams(Api.GET_GOODS);
         params.addBodyParameter("uid", userToken.getUid() + "");
@@ -304,22 +312,15 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, responseObject.toString());
                 if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
                     if (responseObject.getItems().size() != 0) {
-                        if (tag == REFRESH) {
-                            page = 0;
-                            if (data != null && data.size() != 0) {
-                                data.clear();
-                                pics.clear();
-                            }
-                        }
-                        data.addAll(responseObject.getItems());
+                        mData.addAll(responseObject.getItems());
                         pics.putAll(responseObject.getPics());
                         myAdapter.notifyDataSetChanged();
                         if (tag == LOAD_MORE) {
-                            page += size;
                             mRefreshLayout.finishLoadMore();
                         } else {
                             mRefreshLayout.finishRefresh();
                         }
+                        page += size;
                     } else {
                         if (tag == LOAD_MORE) {
                             mRefreshLayout.finishLoadMoreWithNoMoreData();
@@ -358,6 +359,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
             private TextView tv_price;
             private TextView tv_visited;
             private TextView tv_postTime;
+            private LinearLayout ll;
 
             MyHolder(View itemView) {
                 super(itemView);
@@ -367,6 +369,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 tv_price = itemView.findViewById(R.id.offer_tv_price);
                 tv_postTime = itemView.findViewById(R.id.offer_tv_post_time);
                 tv_visited = itemView.findViewById(R.id.offer_tv_visited);
+                ll = itemView.findViewById(R.id.offer_ll);
             }
         }
 
@@ -379,24 +382,38 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-            Good good = data.get(position);
+            final Good good = mData.get(position);
             holder.tv_details.setText(good.getDetails());
             holder.tv_keyword.setText(good.getKeyword());
             holder.tv_price.setText("¥" + good.getPrice());
             holder.tv_postTime.setText(good.getPost_time());
             holder.tv_visited.setText("浏览量:" + good.getVisited());
-            String[] urls = pics.get(good.getGid() + "");
-            Log.d(TAG, Arrays.toString(urls) + " gid=" + good.getGid() + " pics=" + pics.size() + " data=" + data.size());
+
+            final String[] urls = pics.get(good.getGid() + "");
+            Log.d(TAG, Arrays.toString(urls) + " gid=" + good.getGid() + " pics=" + pics.size() + " mData=" + mData.size());
             if (pics != null && pics.size() != 0 && urls.length != 0) {
                 Picasso.get().load(Api.ITEM_IMAGE + urls[0]).into(holder.iv_head);
             }
+            holder.ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), ItemDetailsActivity.class);
+                    intent.putExtra("good", good);
+                    if (pics != null && pics.size() != 0 && urls.length != 0) {
+                        intent.putExtra("pics", urls);
+                    }
+                    startActivity(intent);
+                }
+            });
 
         }
 
         @Override
         public int getItemCount() {
-            return data.size();
+            return mData.size();
         }
+
+
     }
 
 

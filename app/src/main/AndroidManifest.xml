@@ -18,26 +18,31 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.SplashActivity">
-
-        </activity>
-        <activity android:name=".activity.MainActivity"
-            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask">
+
+        </activity>
         <activity android:name=".activity.LoginActivity">
 
         </activity>
+
+        <activity android:name=".activity.ItemDetailsActivity" />
 
         <activity android:name=".activity.EditUserInfoActivity">
 
         </activity>
 
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.PostItemActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activity.PostItemActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activity.PostNeedActivity" />
 
         <provider

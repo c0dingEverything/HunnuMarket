@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
@@ -15,6 +19,7 @@ import android.provider.MediaStore;
 public class ImagePicker {
     private Context mContext;
     private Intent mData;
+
 
     public ImagePicker(Context context, Intent data) {
         mContext = context;
