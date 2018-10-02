@@ -69,6 +69,10 @@
     <string name="authorized">已认证</string>
     <string name="unauthorized">未认证</string>
     <string name="banned">已封禁</string>
+    <string name="select_all">全选</string>
+    <string name="delete">删除</string>
+    <string name="deleted">删除成功</string>
+    <string name="operation_fail">操作失败</string>
 
     <string-array name="locations">
         <item>德智</item>

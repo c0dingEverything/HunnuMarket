@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -133,7 +132,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 params.addBodyParameter("user", new Gson().toJson(user));
                 if (!TextUtils.isEmpty(headPath)) {
                     List<KeyValue> list = new ArrayList<>();
-                    list.add(new KeyValue("head", new File(headPath)));
+                    list.add(new KeyValue("head", DataUtil.compressImageToFile(headPath, false, 50, 50)));
                     params.setRequestBody(new MultipartBody(list, "UTF-8"));
                     params.setMultipart(true);
                 }
@@ -197,7 +196,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 Drawable left = getResources().getDrawable(R.drawable.head);
                 left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());
                 Drawable right = Drawable.createFromPath(headPath);
-                right.setBounds(0, 0, right.getMinimumWidth() - 5, right.getMinimumHeight() - 5);
+                right.setBounds(0, 0, 48, 48);
                 tv_head.setCompoundDrawables(left, null, right, null);
             }
         }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Display;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,11 +40,9 @@ import org.xutils.http.RequestParams;
 import org.xutils.http.body.MultipartBody;
 import org.xutils.x;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 
 
 public class PostItemActivity extends AppCompatActivity implements View.OnClickListener {
@@ -165,21 +162,8 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                     int i = 1;
                     for (String pic : pics) {
                         try {
-                            BitmapFactory.Options options = new BitmapFactory.Options();
-                            options.inJustDecodeBounds = true;
-                            Bitmap bitmap = BitmapFactory.decodeFile(pic, options);
-                            Display defaultDisplay = getWindowManager().getDefaultDisplay();
-                            Point point = new Point();
-                            defaultDisplay.getSize(point);
-                            int w = bitmap.getWidth() / point.x;
-                            int h = bitmap.getHeight() / point.y;
-                            int scale;
-                            if (w >= h) {
-                                scale = w;
-                            } else {
-                                scale = h;
-                            }
-                            list.add(new KeyValue("pic_" + i++, new File(pic)));
+                            DisplayMetrics metrics = getResources().getDisplayMetrics();
+                            list.add(new KeyValue("pic_" + i++, DataUtil.compressImageToFile(pic, true, 0, 0)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -254,6 +238,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
 
     @Override
     @TargetApi(Build.VERSION_CODES.KITKAT)

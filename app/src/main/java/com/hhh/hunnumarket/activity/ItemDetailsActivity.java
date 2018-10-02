@@ -5,10 +5,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,6 +21,7 @@ import com.hhh.hunnumarket.bean.ResponseObject;
 import com.hhh.hunnumarket.bean.User;
 import com.hhh.hunnumarket.consts.Api;
 import com.hhh.hunnumarket.utils.SharedPreferenceUtil;
+import com.hhh.hunnumarket.utils.XhttpUtil;
 import com.squareup.picasso.Picasso;
 
 import org.xutils.common.Callback;
@@ -35,14 +39,17 @@ import okhttp3.Response;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
-    public ImageView iv_head;
-    public LinearLayout ll;
-    public TextView tv_basic_info;
-    public TextView tv_nickname;
-    public TextView tv_post_time;
-    public TextView tv_verified;
-    public TextView tv_visited;
-    public AsyncTask<Integer, Void, User> execute;
+    private ImageView iv_head;
+    private LinearLayout ll;
+    private TextView tv_basic_info;
+    private TextView tv_nickname;
+    private TextView tv_post_time;
+    private TextView tv_verified;
+    private ImageButton ib_report;
+    private ImageButton ib_delete;
+    private TextView tv_visited;
+    private boolean is_reported;
+    private AsyncTask<Integer, Void, User> execute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,35 +59,61 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setData();
     }
 
-    private void updateVisited(Good good) {
+
+    private void updateNumAddOne(final Good good, final String key, boolean isReportBtn) {
         if (good.getUid() != SharedPreferenceUtil.getUid()) {
-            RequestParams params = new RequestParams(Api.UPDATE_GOOD);
-            params.addBodyParameter("uid", SharedPreferenceUtil.getUid() + "");
-            params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken());
-            params.addBodyParameter("flag", "visited");
-            params.addBodyParameter("good", new Gson().toJson(good));
+            if (isReportBtn) {
+                ib_report.setVisibility(View.VISIBLE);
+                ib_report.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AsyncConnect(good, key);
+                    }
+                });
 
-            x.http().post(params, new Callback.CommonCallback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                }
-
-                @Override
-                public void onError(Throwable ex, boolean isOnCallback) {
-
-                }
-
-                @Override
-                public void onCancelled(CancelledException cex) {
-
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
+            } else {
+                AsyncConnect(good, key);
+            }
         }
+    }
+
+    private void AsyncConnect(Good good, final String key) {
+        RequestParams params = new RequestParams(Api.UPDATE_GOOD);
+        params.addBodyParameter("uid", SharedPreferenceUtil.getUid() + "");
+        params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken());
+        params.addBodyParameter("flag", key);
+        params.addBodyParameter("good", new Gson().toJson(good));
+
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ResponseObject<String> responseObject = new Gson().fromJson(result, new TypeToken<ResponseObject<String>>() {
+                }.getType());
+                if (responseObject.getStatus() == ResponseObject.STATUS_OK && "reports".equals(key)) {
+                    if (is_reported) {
+                        Toast.makeText(getApplicationContext(), "多大仇，以至于反复举报", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(getApplicationContext(), "举报成功", Toast.LENGTH_SHORT).show();
+                    is_reported = true;
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     @Override
@@ -93,7 +126,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         @Override
         protected User doInBackground(Integer... integers) {
-
             OkHttpClient client = new OkHttpClient();
             Request.Builder requestBuilder = new Request.Builder();
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Api.GET_USER_INFO).newBuilder();
@@ -117,12 +149,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(User user) {
-
-            String nickname = user.getNickname();
-            if (nickname == null) {
-                nickname = "";
+            if (user == null) {
+                Toast.makeText(getApplicationContext(), "user is null", Toast.LENGTH_SHORT).show();
+                user = new User();
+                user.setState(0);
+                user.setNickname("获取用户信息失败");
             }
-            tv_nickname.setText(nickname);
+            tv_nickname.setText(user.getNickname());
             tv_verified.setText(getUserStatus(user.getState()));
             Picasso.get().load(Api.getPicFullUrl(user.getImage_url())).into(iv_head);
         }
@@ -143,7 +176,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String[] pics = intent.getStringArrayExtra("pics");
         Good good = (Good) intent.getSerializableExtra("good");
-        updateVisited(good);
+        updateNumAddOne(good, "reports", true);
+        updateNumAddOne(good, "visited", false);
+        setDeleteBtn(good);
         execute = new AsyncUserTask().execute(good.getUid());
         if (pics != null) {
             for (String pic : pics) {
@@ -162,6 +197,52 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tv_post_time.setText(good.getPost_time());
     }
 
+    private void setDeleteBtn(final Good good) {
+        if (good.getUid() == SharedPreferenceUtil.getUid()) {
+            ib_delete.setVisibility(View.VISIBLE);
+            ib_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RequestParams params = new RequestParams(Api.UPDATE_GOOD);
+                    XhttpUtil.WrapParamsWithToken(params);
+                    params.addBodyParameter("flag", "delete");
+                    params.addBodyParameter("good", new Gson().toJson(good));
+                    x.http().post(params, new Callback.CommonCallback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            ResponseObject<String> responseObject = new Gson().fromJson(result, new TypeToken<ResponseObject<String>>() {
+                            }.getType());
+                            if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
+                                Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent();
+                                intent.putExtra("gid", good.getGid());
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), R.string.operation_fail, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable ex, boolean isOnCallback) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(CancelledException cex) {
+
+                        }
+
+                        @Override
+                        public void onFinished() {
+
+                        }
+                    });
+                }
+            });
+        }
+    }
+
 
     private void initUI() {
         iv_head = findViewById(R.id.act_details_iv_head);
@@ -171,5 +252,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tv_post_time = findViewById(R.id.act_details_tv_post_time);
         tv_verified = findViewById(R.id.act_details_tv_verified);
         tv_visited = findViewById(R.id.act_details_tv_visited);
+        ib_report = findViewById(R.id.act_details_ib_report);
+        ib_delete = findViewById(R.id.act_details_ib_delete);
     }
 }

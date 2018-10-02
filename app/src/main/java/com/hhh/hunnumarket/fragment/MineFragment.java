@@ -1,7 +1,6 @@
 package com.hhh.hunnumarket.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +17,14 @@ import android.widget.Toast;
 
 import com.hhh.hunnumarket.R;
 import com.hhh.hunnumarket.activity.EditUserInfoActivity;
+import com.hhh.hunnumarket.activity.HandleMyPostsActivity;
 import com.hhh.hunnumarket.activity.LoginActivity;
-import com.hhh.hunnumarket.bean.Good;
 import com.hhh.hunnumarket.bean.User;
 import com.hhh.hunnumarket.consts.Api;
-import com.hhh.hunnumarket.utils.DataUtil;
 import com.hhh.hunnumarket.utils.SharedPreferenceUtil;
 import com.squareup.picasso.Picasso;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class MineFragment extends Fragment implements View.OnClickListener {
@@ -94,7 +94,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mime_rl_my_post:
-                Toast.makeText(getActivity(), "记录", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), HandleMyPostsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.mine_tv_about:
                 Toast.makeText(getActivity(), "关于", Toast.LENGTH_SHORT).show();
@@ -103,7 +104,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_btn_edit:
-                startActivityForResult(new Intent(getActivity(), EditUserInfoActivity.class), 1);
+                startActivity(new Intent(getActivity(), EditUserInfoActivity.class));
                 break;
             case R.id.mine_btn_logout:
                 startActivity(new Intent(getActivity(), LoginActivity.class));
@@ -113,10 +114,4 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 1) {
-
-        }
-    }
 }

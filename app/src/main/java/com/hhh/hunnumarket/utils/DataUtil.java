@@ -1,6 +1,10 @@
 package com.hhh.hunnumarket.utils;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,12 +18,59 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class DataUtil {
     private static List<Category> categoryList;
     private static User mUser;
     private static Application mApp;
+
+
+    public static File compressImageToFile(String pic, boolean useDeviceSize, int width, int height) {
+        if (useDeviceSize) {
+            DisplayMetrics metrics = mApp.getResources().getDisplayMetrics();
+            width = metrics.widthPixels;
+            height = metrics.heightPixels;
+        }
+        String path;
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            path = mApp.getExternalCacheDir().getAbsolutePath();
+        } else {
+            path = mApp.getCacheDir().getAbsolutePath();
+        }
+        String desPath = path + File.separator + new File(pic).getName();
+        File file = new File(desPath);
+        if (file.exists()) {
+            return file;
+        } else {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(pic, options);
+            options.inJustDecodeBounds = false;
+            int w = options.outWidth / width;
+            int h = options.outHeight / height;
+            int scale;
+            if (w >= h) {
+                scale = w;
+            } else {
+                scale = h;
+            }
+            if (scale < 0) {
+                scale = 1;
+            }
+            options.inSampleSize = scale;
+            Bitmap bitmap = BitmapFactory.decodeFile(pic, options);
+            try {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, new FileOutputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
 
     public static void init(Application app) {
         mApp = app;

@@ -15,6 +15,15 @@ public class Condition {
     private int type = Good.TYPE_SELL;
     private int cid;
     private int sex_tendency = SEX_ALL;
+    private int uid = -1;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public int getCid() {
         return cid;

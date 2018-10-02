@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/fra_handle_ll"
+        style="?attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/fra_handle_btn_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/select_all"
+            android:textColor="@android:color/holo_orange_light" />
+
+        <View
+            android:layout_marginTop="1dp"
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/fra_handle_btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/delete"
+            android:textColor="@android:color/holo_orange_light" />
+    </LinearLayout>
+
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/frag_handle_refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fra_handle_ll">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fra_handle_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+
+</RelativeLayout>

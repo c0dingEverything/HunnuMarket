@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,43 +19,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hhh.hunnumarket.R;
+import com.hhh.hunnumarket.bean.ResponseObject;
 import com.hhh.hunnumarket.bean.User;
 import com.hhh.hunnumarket.consts.Api;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
-import org.xutils.view.annotation.Event;
-import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-public class RegisterActivity extends AppCompatActivity {
-    private final String TAG = this.getClass().getSimpleName();
-    @ViewInject(value = R.id.register_btn)
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btn_register;
-
-    @ViewInject(value = R.id.register_tv_location)
     private TextView tv_location;
-
-    @ViewInject(value = R.id.register_et_phone)
     private EditText et_phone;
-    @ViewInject(value = R.id.register_et_pwd)
     private EditText et_pwd;
-    @ViewInject(value = R.id.register_et_qq)
     private EditText et_qq;
-    @ViewInject(value = R.id.register_et_sid)
     private EditText et_sid;
-    @ViewInject(value = R.id.register_pb)
     private ProgressBar pb;
-    @ViewInject(value = R.id.register_toolbar)
-    private Toolbar toolbar;
-    @ViewInject(value = R.id.register_cb)
     private CheckBox cb;
-    @ViewInject(value = R.id.register_tv_agreement)
     private TextView tv_agreement;
-
     private int checkedItem;
 
 
@@ -66,50 +46,25 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        x.view().inject(this);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setTitle("");
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
+        initUI();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    private void initUI() {
+        btn_register = findViewById(R.id.register_btn);
+        tv_location = findViewById(R.id.register_tv_location);
+        et_phone = findViewById(R.id.register_et_phone);
+        et_qq = findViewById(R.id.register_et_qq);
+        et_phone = findViewById(R.id.register_et_phone);
+        et_pwd = findViewById(R.id.register_et_pwd);
+        et_sid = findViewById(R.id.register_et_sid);
+        pb = findViewById(R.id.register_pb);
+        cb = findViewById(R.id.register_cb);
+        tv_agreement = findViewById(R.id.register_tv_agreement);
+        btn_register.setOnClickListener(this);
+        tv_location.setOnClickListener(this);
+        tv_agreement.setOnClickListener(this);
     }
 
-    @Event({R.id.register_btn, R.id.register_tv_agreement, R.id.register_tv_location})
-    private void click(View v) {
-        switch (v.getId()) {
-            case R.id.register_btn:
-                pb.setVisibility(View.VISIBLE);
-                btn_register.setClickable(false);
-                prepareData();
-                break;
-            case R.id.register_tv_agreement:
-                Toast.makeText(getApplicationContext(), "协议就是:用户信息完全保密,使用过程中被他人骗取钱财,开发者不负责赔偿!", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.register_tv_location:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                final String[] items = getResources().getStringArray(R.array.locations);
-                builder.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        checkedItem = which;
-                        tv_location.setText(items[which]);
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-                break;
-        }
-    }
 
     private void prepareData() {
         String sid = et_sid.getText().toString().trim();
@@ -118,40 +73,37 @@ public class RegisterActivity extends AppCompatActivity {
         String location = tv_location.getText().toString().trim();
         String qq = et_qq.getText().toString().trim();
 
-        if (verifyInput(sid, password, phone, location, qq)) {
+        if (!verifyInput(sid, password, phone, location, qq)) {
             return;
         }
-        String imei = null;
-        JSONObject jsonObject = null;
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         try {
             if (tm != null) {
+                String imei;
                 if (Build.VERSION.SDK_INT >= 26) {
                     imei = tm.getImei();
                 } else {
                     imei = tm.getDeviceId();
                 }
-                jsonObject = new JSONObject();
-//                jsonObject.put("intent", "register");
-                jsonObject.put("sid", sid);
-                jsonObject.put("password", password);
-                jsonObject.put("phone_number", phone);
-                jsonObject.put("user_location", location);
-                jsonObject.put("qq", qq);
-                jsonObject.put("imei", imei);
+                User user = new User();
+                user.setSid(sid);
+                user.setPassword(password);
+                user.setPhone_number(phone);
+                user.setUser_location(location);
+                user.setQq(qq);
+                user.setImei(imei);
                 RequestParams params = new RequestParams(Api.REGISTER);
                 params.setAsJsonContent(true);
                 params.setConnectTimeout(3000);
-                params.setBodyContent(jsonObject.toString());
+                params.setBodyContent(new Gson().toJson(user));
                 register(params);
+                Log.d("RegisterActivity", params.getBodyContent());
             } else {
                 Toast.makeText(getApplicationContext(), R.string.permission_deny_imei, Toast.LENGTH_SHORT).show();
             }
         } catch (SecurityException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), R.string.permission_deny_imei, Toast.LENGTH_SHORT).show();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
     }
@@ -184,33 +136,32 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register(RequestParams params) {
 
-        x.http().post(params, new Callback.CommonCallback<JSONObject>() {
+        x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
-            public void onSuccess(JSONObject result) {
-                Log.d(TAG, result + "");
+            public void onSuccess(String result) {
                 try {
-
-                    Toast.makeText(getApplicationContext(), result.getString("msg"), Toast.LENGTH_SHORT).show();
-                    if (result.getInt("status") == 1) {
+                    ResponseObject<User> responseObject = new Gson().fromJson(result, new TypeToken<ResponseObject<User>>() {
+                    }.getType());
+                    if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
                         Intent intent = getIntent();
-                        intent.putExtra("user", new Gson().fromJson(String.valueOf(result.getJSONObject("data")), User.class));
+                        Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
+                        intent.putExtra("user", responseObject.getData());
                         setResult(RESULT_OK, intent);
                         finish();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+                pb.setVisibility(View.INVISIBLE);
+                btn_register.setClickable(true);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
-                Log.d(TAG, ex.toString());
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
-                Log.d(TAG, cex.toString());
             }
 
             @Override
@@ -220,5 +171,32 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.register_btn:
+                pb.setVisibility(View.VISIBLE);
+                btn_register.setClickable(false);
+                prepareData();
+                break;
+            case R.id.register_tv_agreement:
+                Toast.makeText(getApplicationContext(), "协议就是:用户信息完全保密,使用过程中被他人骗取钱财,开发者不负责赔偿!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.register_tv_location:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                final String[] items = getResources().getStringArray(R.array.locations);
+                builder.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        checkedItem = which;
+                        tv_location.setText(items[which]);
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+                break;
+        }
     }
 }
