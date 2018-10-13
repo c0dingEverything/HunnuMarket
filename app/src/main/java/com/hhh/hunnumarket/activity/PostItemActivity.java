@@ -269,6 +269,7 @@ public class PostItemActivity extends AppCompatActivity implements View.OnClickL
                         layoutParams.height = 150;
                         layoutParams.width = 150;
                     }
+                    imageView.setPadding(0, 0, 3, 0);
                     imageView.setLayoutParams(layoutParams);
                     imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     imageView.setImageBitmap(bitmap);

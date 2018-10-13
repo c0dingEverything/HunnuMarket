@@ -1,5 +1,6 @@
 package com.hhh.hunnumarket.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -81,7 +82,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     private int order_checked;
     private int type_checked;
     private int sex_checked;
-    private Condition condition;
+    private Condition mCondition;
+    public Context mContext;
 
 
     @Override
@@ -90,8 +92,10 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_scan, container, false);
         initUI(view);
+
         return view;
     }
+
 
     private void initUI(View view) {
         mRecyclerView = view.findViewById(R.id.fra_scan_recycler_view);
@@ -114,9 +118,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getContext(), PostItemActivity.class));
             }
         });
-        mRefreshLayout.setRefreshHeader(new ClassicsHeader(getContext()));
-        mRefreshLayout.setRefreshFooter(new ClassicsFooter(getContext()));
-        myAdapter = new MyAdapter();
+
     }
 
     @Override
@@ -132,17 +134,17 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                     for (Category category : categoryList) {
                         categories[i++] = category.getCname();
                     }
-                    new AlertDialog.Builder(getActivity()).setTitle(R.string.category).setSingleChoiceItems(categories, category_checked, new DialogInterface.OnClickListener() {
+                    new AlertDialog.Builder(mContext).setTitle(R.string.category).setSingleChoiceItems(categories, category_checked, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             category_checked = which;
                             tv_category.setText(categories[which]);
                             for (Category category : categoryList) {
                                 if (category.getCname().equals(categories[category_checked])) {
-                                    condition.setCid(category.getCid());
+                                    mCondition.setCid(category.getCid());
                                     break;
                                 } else {
-                                    condition.setCid(0);
+                                    mCondition.setCid(0);
                                 }
                             }
                             dialog.dismiss();
@@ -154,21 +156,23 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.fra_scan_tv_order:
                 final String[] orders = getResources().getStringArray(R.array.order);
-                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(orders, order_checked, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(mContext).setSingleChoiceItems(orders, order_checked, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         order_checked = which;
                         tv_order.setText(orders[which]);
-                        if (orders[which].contains("升")) {
-                            condition.setOrder(Condition.ORDER_UP);
-                        } else if (orders[which].contains("降")) {
-                            condition.setOrder(Condition.ORDER_DOWN);
-                        }
 
                         if (orders[which].contains("价格")) {
-                            condition.setOrderBy("price");
+                            mCondition.setOrderBy("price");
                         } else if (orders[which].contains("浏览量")) {
-                            condition.setOrderBy("visited");
+                            mCondition.setOrderBy("visited");
+                        }
+
+                        if (orders[which].contains("升")) {
+                            mCondition.setOrder(Condition.ORDER_UP);
+                        } else if (orders[which].contains("降") || orders[which].contains("综合排序")) {
+                            mCondition.setOrder(Condition.ORDER_DOWN);
+                            mCondition.setOrderBy("gid");
                         }
                         dialog.dismiss();
                         loadData(REFRESH);
@@ -177,17 +181,17 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.fra_scan_tv_sex:
                 final String[] sex = getResources().getStringArray(R.array.sex);
-                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(sex, sex_checked, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(mContext).setSingleChoiceItems(sex, sex_checked, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sex_checked = which;
                         tv_sex.setText(sex[which]);
                         if (sex[which].equals("男")) {
-                            condition.setSex_tendency(Condition.SEX_MAN);
+                            mCondition.setSex_tendency(Condition.SEX_MAN);
                         } else if (sex[which].equals("女")) {
-                            condition.setSex_tendency(Condition.SEX_WOMEN);
+                            mCondition.setSex_tendency(Condition.SEX_WOMEN);
                         } else {
-                            condition.setSex_tendency(Condition.SEX_ALL);
+                            mCondition.setSex_tendency(Condition.SEX_ALL);
                         }
                         dialog.dismiss();
                         loadData(REFRESH);
@@ -196,15 +200,15 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.fra_scan_tv_type:
                 final String[] type = getResources().getStringArray(R.array.type);
-                new AlertDialog.Builder(getActivity()).setSingleChoiceItems(type, type_checked, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(mContext).setSingleChoiceItems(type, type_checked, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         type_checked = which;
                         tv_type.setText(type[which]);
                         if (type[which].equals(getString(R.string.on_sale))) {
-                            condition.setType(Good.TYPE_SELL);
+                            mCondition.setType(Good.TYPE_SELL);
                         } else if (type[which].equals(getString(R.string.demand))) {
-                            condition.setType(Good.TYPE_DEMAND);
+                            mCondition.setType(Good.TYPE_DEMAND);
                         }
                         dialog.dismiss();
                         loadData(REFRESH);
@@ -228,6 +232,14 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mContext = getActivity();
+        if (mContext == null) {
+            Log.e("ScanFragment", getString(R.string.context_null));
+            return;
+        }
+        mRefreshLayout.setRefreshHeader(new ClassicsHeader(mContext));
+        mRefreshLayout.setRefreshFooter(new ClassicsFooter(mContext));
+        myAdapter = new MyAdapter();
         initRequestCondition();
         if (mData == null) {
             mData = new ArrayList<>();
@@ -261,7 +273,7 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(), R.string.msg_error_input_null, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                condition.setKeyword(new String[]{s});
+                mCondition.setKeyword(new String[]{s});
                 /*page = 0;
                 if (mData != null) {
                     mData.clear();
@@ -272,20 +284,19 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private Condition initRequestCondition() {
-        condition = new Condition();
+    private void initRequestCondition() {
+        mCondition = new Condition();
         String keyword = et_search.getText().toString();
         if (!TextUtils.isEmpty(keyword)) {
-            condition.setKeyword(new String[]{keyword});
+            mCondition.setKeyword(new String[]{keyword});
         } else {
-            condition.setKeyword(new String[]{});
+            mCondition.setKeyword(new String[]{});
         }
 
-        condition.setPage(page);
-        condition.setSize(size);
-        condition.setOrder(order == null ? "" : order);
-        condition.setOrderBy(orderBy == null ? "" : orderBy);
-        return condition;
+        mCondition.setPage(page);
+        mCondition.setSize(size);
+        mCondition.setOrder(order == null ? "" : order);
+        mCondition.setOrderBy(orderBy == null ? "" : orderBy);
     }
 
     private void loadData(final int tag) {
@@ -302,8 +313,8 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
         params.addBodyParameter("access_token", userToken.getAccess_token());
         params.setAsJsonContent(true);
         params.setConnectTimeout(5000);
-        condition.setPage(page);
-        params.setBodyContent(new Gson().toJson(condition));
+        mCondition.setPage(page);
+        params.setBodyContent(new Gson().toJson(mCondition));
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -385,9 +396,9 @@ public class ScanFragment extends Fragment implements View.OnClickListener {
             final Good good = mData.get(position);
             holder.tv_details.setText(good.getDetails());
             holder.tv_keyword.setText(good.getKeyword());
-            holder.tv_price.setText("¥" + good.getPrice());
+            holder.tv_price.setText(getString(R.string.sell_price, DataUtil.formatNumToString(good.getPrice())));
             holder.tv_postTime.setText(good.getPost_time());
-            holder.tv_visited.setText("浏览量:" + good.getVisited());
+            holder.tv_visited.setText(getString(R.string.visited, DataUtil.formatNumToString(good.getVisited())));
 
             final String[] urls = pics.get(good.getGid() + "");
             Log.d(TAG, Arrays.toString(urls) + " gid=" + good.getGid() + " pics=" + pics.size() + " mData=" + mData.size());

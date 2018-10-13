@@ -142,12 +142,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     ResponseObject<User> responseObject = new Gson().fromJson(result, new TypeToken<ResponseObject<User>>() {
                     }.getType());
-                    if (responseObject.getStatus() == ResponseObject.STATUS_OK) {
+                    int status = responseObject.getStatus();
+                    if (status == ResponseObject.STATUS_OK) {
                         Intent intent = getIntent();
                         Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
                         intent.putExtra("user", responseObject.getData());
                         setResult(RESULT_OK, intent);
                         finish();
+                    } else if (status == ResponseObject.STATUS_ERROR) {
+                        Toast.makeText(getApplicationContext(), responseObject.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

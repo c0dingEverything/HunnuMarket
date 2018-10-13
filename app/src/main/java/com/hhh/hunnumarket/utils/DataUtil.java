@@ -21,12 +21,18 @@ import org.xutils.x;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class DataUtil {
     private static List<Category> categoryList;
     private static User mUser;
     private static Application mApp;
+
+
+    public static String formatNumToString(Object f) {
+        return new DecimalFormat("#.#").format(f);
+    }
 
 
     public static File compressImageToFile(String pic, boolean useDeviceSize, int width, int height) {
@@ -139,8 +145,8 @@ public class DataUtil {
 
     public static void updateCategoriesFromServer() {
         RequestParams params = new RequestParams(Api.GET_CATEGORIES);
-//        params.addBodyParameter("uid", SharedPreferenceUtil.getUid(context) + "");
-//        params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(context));
+//        params.addBodyParameter("uid", SharedPreferenceUtil.getUid(mContext) + "");
+//        params.addBodyParameter("access_token", SharedPreferenceUtil.getAccessToken(mContext));
         try {
             x.http().get(params, new Callback.CommonCallback<String>() {
                 @Override

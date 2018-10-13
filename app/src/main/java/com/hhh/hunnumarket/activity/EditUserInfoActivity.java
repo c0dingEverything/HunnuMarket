@@ -132,7 +132,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 params.addBodyParameter("user", new Gson().toJson(user));
                 if (!TextUtils.isEmpty(headPath)) {
                     List<KeyValue> list = new ArrayList<>();
-                    list.add(new KeyValue("head", DataUtil.compressImageToFile(headPath, false, 50, 50)));
+                    list.add(new KeyValue("head", DataUtil.compressImageToFile(headPath, false, 100, 100)));
                     params.setRequestBody(new MultipartBody(list, "UTF-8"));
                     params.setMultipart(true);
                 }
@@ -196,7 +196,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 Drawable left = getResources().getDrawable(R.drawable.head);
                 left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());
                 Drawable right = Drawable.createFromPath(headPath);
-                right.setBounds(0, 0, 48, 48);
+                right.setBounds(0, 0, 98, 98);
                 tv_head.setCompoundDrawables(left, null, right, null);
             }
         }

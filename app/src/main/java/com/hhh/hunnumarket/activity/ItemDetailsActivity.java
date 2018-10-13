@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -29,6 +30,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
 import okhttp3.Call;
@@ -123,6 +125,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
 
     private class AsyncUserTask extends AsyncTask<Integer, Void, User> {
+        private WeakReference<ItemDetailsActivity> reference;
+
+        AsyncUserTask(ItemDetailsActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
 
         @Override
         protected User doInBackground(Integer... integers) {
@@ -147,10 +154,12 @@ public class ItemDetailsActivity extends AppCompatActivity {
             return null;
         }
 
+
         @Override
         protected void onPostExecute(User user) {
             if (user == null) {
-                Toast.makeText(getApplicationContext(), "user is null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(reference.get(), "user is null", Toast.LENGTH_SHORT).show();
+                Log.w("ItemDetailsActivity", "user is null");
                 user = new User();
                 user.setState(0);
                 user.setNickname("获取用户信息失败");
@@ -179,7 +188,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         updateNumAddOne(good, "reports", true);
         updateNumAddOne(good, "visited", false);
         setDeleteBtn(good);
-        execute = new AsyncUserTask().execute(good.getUid());
+        execute = new AsyncUserTask(this).execute(good.getUid());
         if (pics != null) {
             for (String pic : pics) {
                 ImageView imageView = new ImageView(this);

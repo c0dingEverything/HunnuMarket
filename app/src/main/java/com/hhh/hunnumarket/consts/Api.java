@@ -2,7 +2,7 @@ package com.hhh.hunnumarket.consts;
 
 public class Api {
     private final static String BASE_URL_LOCAL = "http://10.0.2.2:8080";
-    private final static String BASE_URL_WEB = "http://192.168.31.127:8080";
+    private final static String BASE_URL_WEB = "http://192.168.16.128:8080";
     private final static String BASE_URL_SERVER = "http://119.29.129.204:8080";
     public final static String BASE_URL = BASE_URL_SERVER;
 
@@ -18,6 +18,7 @@ public class Api {
     public final static String MODIFY_USER_INFO = BASE_URL + "/hm/api/modifyUserInfo";
     public final static String GET_USER_INFO = BASE_URL + "/hm/api/getUserInfo";
     public final static String UPDATE_GOOD = BASE_URL + "/hm/api/updateGood";
+    public final static String GET_MSG = BASE_URL + "/hm/api/getMsg";
 
     public static String getFileUrl(String fileName) {
         return BASE_URL + SEPARATOR + SPLASH + SEPARATOR + fileName;
